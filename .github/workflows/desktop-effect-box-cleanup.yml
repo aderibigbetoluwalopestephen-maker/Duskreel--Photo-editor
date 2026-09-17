@@ -26,6 +26,9 @@ jobs:
       - name: Add optional user-controlled watermark
         run: python3 scripts/add-desktop-watermark-controls.py
 
+      - name: Compact presets and clean old effect boxes
+        run: python3 scripts/compact-desktop-presets-and-clean-effects.py
+
       - name: Commit generated index.html
         run: |
           git config user.name "github-actions[bot]"
@@ -34,6 +37,6 @@ jobs:
           if git diff --cached --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "Add optional user-controlled watermark"
+            git commit -m "Compact desktop presets and remove empty effect boxes"
             git push
           fi
