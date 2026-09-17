@@ -23,6 +23,9 @@ jobs:
       - name: Finalize compact effect layout
         run: python3 scripts/finalize-desktop-effects-v3.py
 
+      - name: Add more compact desktop effects
+        run: python3 scripts/add-desktop-effects-v4.py
+
       - name: Commit generated index.html
         run: |
           git config user.name "github-actions[bot]"
@@ -31,6 +34,6 @@ jobs:
           if git diff --cached --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "Finalize compact desktop effects"
+            git commit -m "Add many more compact desktop effects"
             git push
           fi
