@@ -20,6 +20,9 @@ jobs:
       - name: Add compact desktop effects and watermark controls
         run: python3 scripts/add-desktop-effects-and-watermark.py
 
+      - name: Finalize compact effect layout
+        run: python3 scripts/finalize-desktop-effects-v3.py
+
       - name: Commit generated index.html
         run: |
           git config user.name "github-actions[bot]"
@@ -28,6 +31,6 @@ jobs:
           if git diff --cached --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "Add compact desktop effects and reduce watermark controls"
+            git commit -m "Finalize compact desktop effects"
             git push
           fi
