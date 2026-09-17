@@ -29,6 +29,9 @@ jobs:
       - name: Compact presets and clean old effect boxes
         run: python3 scripts/compact-desktop-presets-and-clean-effects.py
 
+      - name: Restore visible presets and watermark controls
+        run: python3 scripts/restore-desktop-presets-watermark-v2.py
+
       - name: Commit generated index.html
         run: |
           git config user.name "github-actions[bot]"
@@ -37,6 +40,6 @@ jobs:
           if git diff --cached --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "Compact desktop presets and remove empty effect boxes"
+            git commit -m "Restore visible desktop presets and watermark controls"
             git push
           fi
