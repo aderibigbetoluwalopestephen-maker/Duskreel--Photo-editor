@@ -32,6 +32,9 @@ jobs:
       - name: Restore visible presets and watermark controls
         run: python3 scripts/restore-desktop-presets-watermark-v2.py
 
+      - name: Make presets 1x1 like Crop tools
+        run: python3 scripts/make-desktop-presets-1x1.py
+
       - name: Commit generated index.html
         run: |
           git config user.name "github-actions[bot]"
@@ -40,6 +43,6 @@ jobs:
           if git diff --cached --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "Restore visible desktop presets and watermark controls"
+            git commit -m "Make desktop presets 1x1 like Crop tools"
             git push
           fi
