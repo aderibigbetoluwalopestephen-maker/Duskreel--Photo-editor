@@ -23,19 +23,8 @@ jobs:
       - name: Add more compact desktop effects
         run: python3 scripts/add-desktop-effects-v4.py
 
-      - name: Remove watermark controls
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          p = Path('index.html')
-          s = p.read_text(encoding='utf-8')
-          marker = '/* DUSKREEL DESKTOP WATERMARK REMOVED V1 */'
-          if marker not in s:
-              patch = '''<style>\n/* DUSKREEL DESKTOP WATERMARK REMOVED V1 */\n@media (min-width:761px){\n  #watermarkControls,.watermark-controls,#watermarkPanel,.watermark-panel,#watermarkBtn{display:none !important;}\n}\n</style>\n<script>\n(function(){\n  function removeWatermarkUI(){\n    document.querySelectorAll('#watermarkControls,.watermark-controls,#watermarkPanel,.watermark-panel,#watermarkBtn').forEach(function(el){el.remove();});\n    document.querySelectorAll('button').forEach(function(b){\n      if ((b.textContent||'').trim().toLowerCase() === 'watermark') b.remove();\n    });\n  }\n  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',removeWatermarkUI,{once:true});\n  else removeWatermarkUI();\n  setTimeout(removeWatermarkUI,500);\n  setTimeout(removeWatermarkUI,1500);\n})();\n</script>\n'''
-              s = s.replace('</head>', patch + '</head>', 1)
-          p.write_text(s, encoding='utf-8')
-          print('Desktop watermark UI removed')
-          PY
+      - name: Add optional user-controlled watermark
+        run: python3 scripts/add-desktop-watermark-controls.py
 
       - name: Commit generated index.html
         run: |
@@ -45,6 +34,6 @@ jobs:
           if git diff --cached --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "Remove watermark controls from desktop editor"
+            git commit -m "Add optional user-controlled watermark"
             git push
           fi
