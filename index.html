@@ -1273,6 +1273,26 @@ main{grid-template-columns:214px minmax(0,1fr) 350px;background:#171719;}
   setTimeout(setup,700); setTimeout(setup,1800);
 })();
 </script>
+<style>
+/* DUSKREEL DESKTOP PRESETS COMPACT V1 */
+@media (min-width:761px){
+  /* Match preset controls to the compact Crop tool footprint. */
+  #duskEffectsV2{display:grid!important;grid-template-columns:repeat(6,minmax(54px,1fr))!important;gap:5px!important;max-height:none!important;overflow:visible!important;padding:4px!important;}
+  #duskEffectsV2 button{min-width:0!important;width:100%!important;height:30px!important;padding:4px 5px!important;margin:0!important;border-radius:5px!important;font-size:10px!important;line-height:1.05!important;}
+  /* Remove the old tiny/empty effect boxes completely. */
+  #fxGrid,.fxGrid,#fxGrid>*{display:none!important;width:0!important;height:0!important;min-width:0!important;min-height:0!important;padding:0!important;margin:0!important;border:0!important;box-shadow:none!important;}
+  #fxGrid:empty,.fxGrid:empty{display:none!important;}
+}
+</style>
+<script>
+(function(){
+  function clean(){
+    document.querySelectorAll('#fxGrid,.fxGrid').forEach(function(el){el.style.setProperty('display','none','important');el.setAttribute('aria-hidden','true');});
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',clean,{once:true}); else clean();
+  setTimeout(clean,300); setTimeout(clean,1000);
+})();
+</script>
 </head>
 <body>
 
