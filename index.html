@@ -1381,6 +1381,102 @@ main{grid-template-columns:214px minmax(0,1fr) 350px;background:#171719;}
   }
 }
 </style>
+<style>
+/* DUSKREEL DESKTOP FINAL PRESET + UPLOAD FIX V1 */
+@media (min-width:761px){
+  /* Keep Presets visible and make every preset a true 1:1 square. */
+  #duskRestoreTools{
+    display:block!important;
+    visibility:visible!important;
+    opacity:1!important;
+    z-index:999!important;
+    width:270px!important;
+    max-height:calc(100vh - 85px)!important;
+    overflow:auto!important;
+  }
+  #duskRestorePresets{
+    display:grid!important;
+    grid-template-columns:repeat(6,30px)!important;
+    grid-auto-rows:30px!important;
+    gap:5px!important;
+    align-items:start!important;
+  }
+  #duskRestorePresets button{
+    width:30px!important;
+    min-width:30px!important;
+    max-width:30px!important;
+    height:30px!important;
+    min-height:30px!important;
+    max-height:30px!important;
+    padding:2px!important;
+    margin:0!important;
+    border-radius:5px!important;
+    font-size:8px!important;
+    line-height:1!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    text-align:center!important;
+    overflow:hidden!important;
+    white-space:normal!important;
+  }
+  /* Old empty effect boxes stay hidden; the real Presets above stay visible. */
+  #fxGrid,.fxGrid{display:none!important;visibility:hidden!important;}
+}
+</style>
+<script>
+/* DUSKREEL DESKTOP FINAL PRESET + UPLOAD FIX V1 */
+(function(){
+  function showSelectedImage(file){
+    if(!file) return;
+    var type=String(file.type||'').toLowerCase();
+    if(!type.startsWith('image/')) return;
+    var reader=new FileReader();
+    reader.onload=function(ev){
+      var img=new Image();
+      img.onload=function(){
+        var canvases=[];
+        ['afterCanvas','previewCanvas','mainCanvas','editorCanvas','imageCanvas'].forEach(function(id){
+          var c=document.getElementById(id); if(c && c.getContext && !canvases.includes(c)) canvases.push(c);
+        });
+        document.querySelectorAll('main canvas').forEach(function(c){if(c.getContext&&!canvases.includes(c))canvases.push(c);});
+        canvases.forEach(function(c){
+          if(!c.width || !c.height){c.width=img.naturalWidth||img.width;c.height=img.naturalHeight||img.height;}
+          var ctx=c.getContext('2d'); if(!ctx)return;
+          ctx.clearRect(0,0,c.width,c.height);
+          var scale=Math.min(c.width/img.naturalWidth,c.height/img.naturalHeight);
+          var w=img.naturalWidth*scale,h=img.naturalHeight*scale;
+          ctx.drawImage(img,(c.width-w)/2,(c.height-h)/2,w,h);
+        });
+        var stage=document.querySelector('main .stage')||document.querySelector('.stage');
+        if(stage){
+          var old=stage.querySelector('.dusk-upload-preview');
+          if(old)old.remove();
+          var preview=img.cloneNode(false); preview.className='dusk-upload-preview';
+          preview.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:contain;z-index:2;pointer-events:none;display:block;';
+          stage.appendChild(preview);
+          setTimeout(function(){if(preview.parentNode)preview.remove();},1500);
+        }
+      };
+      img.src=ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+  function install(){
+    var input=document.getElementById('photoInput');
+    if(!input || input.dataset.duskFinalUpload==='1')return;
+    input.dataset.duskFinalUpload='1';
+    input.addEventListener('change',function(){
+      var files=Array.from(input.files||[]).filter(function(f){return String(f.type||'').toLowerCase().startsWith('image/');});
+      files.forEach(showSelectedImage);
+      /* Do not stop propagation: the original Duskreel importer must also run. */
+      setTimeout(function(){input.value='';},100);
+    },false);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
+  setTimeout(install,500);setTimeout(install,1200);
+})();
+</script>
 </head>
 <body>
 
@@ -3544,93 +3640,6 @@ document.querySelectorAll('.share-grid button').forEach(b=>{
   });
 });
 
-</script>
-<script>
-/* DUSKREEL DESKTOP IMAGE UPLOAD FIX V1 */
-(function(){
-  function installDesktopUploadFix(){
-    const input = document.getElementById('photoInput');
-    if(!input || input.dataset.duskUploadFix === '1') return;
-    input.dataset.duskUploadFix = '1';
-
-    const imageExtensions = new Set([
-      'jpg','jpeg','jpe','jfif','png','webp','gif','bmp','dib','avif',
-      'ico','tif','tiff','heic','heif','apng','jxl','jp2','j2k','jpf','jpm','jpx'
-    ]);
-
-    function isImageFile(file){
-      if(!file) return false;
-      const type = String(file.type || '').toLowerCase();
-      if(type.startsWith('image/')) return true;
-      const name = String(file.name || '').toLowerCase();
-      const dot = name.lastIndexOf('.');
-      return dot >= 0 && imageExtensions.has(name.slice(dot + 1));
-    }
-
-    function readImage(file){
-      return new Promise((resolve,reject)=>{
-        if(!isImageFile(file)) return reject(new Error('Unsupported image file'));
-        const reader = new FileReader();
-        reader.onload = event => {
-          const img = new Image();
-          img.onload = () => resolve(img);
-          img.onerror = () => reject(new Error('The selected image could not be decoded by this browser.'));
-          img.src = event.target.result;
-        };
-        reader.onerror = () => reject(reader.error || new Error('Could not read the selected image.'));
-        reader.readAsDataURL(file);
-      });
-    }
-
-    input.addEventListener('change', async function(event){
-      event.preventDefault();
-      event.stopImmediatePropagation();
-
-      const files = Array.from(input.files || []).filter(isImageFile);
-      if(!files.length){
-        input.value = '';
-        return;
-      }
-
-      try{
-        if(typeof state === 'undefined' || !state || !Array.isArray(state.photos)){
-          throw new Error('Duskreel editor state is not ready.');
-        }
-
-        for(const file of files){
-          try{
-            const img = await readImage(file);
-            state.photos.push({
-              id: (crypto && crypto.randomUUID) ? crypto.randomUUID() : ('photo-' + Date.now() + '-' + Math.random().toString(36).slice(2)),
-              name: file.name || 'Image',
-              img,
-              spots: [],
-              crop: null,
-              edit: DEFAULT_EDIT()
-            });
-          }catch(error){
-            console.warn('Duskreel could not open image:', file.name, error);
-          }
-        }
-
-        if(state.photos.length && state.activeIndex === -1) state.activeIndex = 0;
-        if(typeof renderThumbs === 'function') renderThumbs();
-        if(typeof renderStageVisibility === 'function') renderStageVisibility();
-        if(typeof render === 'function') render();
-        if(typeof pushHistory === 'function') pushHistory();
-      }finally{
-        // Allow the same file to be selected again after editing/removing it.
-        input.value = '';
-      }
-    }, true);
-  }
-
-  if(document.readyState === 'loading'){
-    document.addEventListener('DOMContentLoaded', installDesktopUploadFix, {once:true});
-  }else{
-    installDesktopUploadFix();
-  }
-})();
 </script>
 </body>
 </html>
