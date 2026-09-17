@@ -35,6 +35,9 @@ jobs:
       - name: Make presets 1x1 like Crop tools
         run: python3 scripts/make-desktop-presets-1x1.py
 
+      - name: Apply final preset and upload fix
+        run: python3 scripts/final-desktop-preset-upload-fix.py
+
       - name: Commit generated index.html
         run: |
           git config user.name "github-actions[bot]"
@@ -43,6 +46,6 @@ jobs:
           if git diff --cached --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "Make desktop presets 1x1 like Crop tools"
+            git commit -m "Fix desktop presets and image upload"
             git push
           fi
