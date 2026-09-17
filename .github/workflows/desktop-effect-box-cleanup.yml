@@ -1,0 +1,30 @@
+name: Clean desktop effect boxes
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Remove desktop effect boxes
+        run: python3 scripts/remove-desktop-effect-boxes.py
+
+      - name: Commit generated index.html
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Remove empty effect boxes from desktop"
+            git push
+          fi
