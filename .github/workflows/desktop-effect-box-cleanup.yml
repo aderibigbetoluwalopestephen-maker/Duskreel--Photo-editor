@@ -1,4 +1,4 @@
-name: Clean desktop effect boxes
+name: Clean desktop effect boxes and controls
 
 on:
   push:
@@ -17,6 +17,9 @@ jobs:
       - name: Remove desktop effect boxes
         run: python3 scripts/remove-desktop-effect-boxes.py
 
+      - name: Add compact desktop effects and watermark controls
+        run: python3 scripts/add-desktop-effects-and-watermark.py
+
       - name: Commit generated index.html
         run: |
           git config user.name "github-actions[bot]"
@@ -25,6 +28,6 @@ jobs:
           if git diff --cached --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "Remove empty effect boxes from desktop"
+            git commit -m "Add compact desktop effects and reduce watermark controls"
             git push
           fi
