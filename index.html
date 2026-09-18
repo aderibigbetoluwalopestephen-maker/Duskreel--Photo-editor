@@ -404,6 +404,13 @@
     background:transparent; cursor:pointer;
   }
 
+  .logo-upload-box{border:1px dashed var(--line);border-radius:8px;padding:14px 10px;text-align:center;background:linear-gradient(180deg,rgba(255,255,255,.025),transparent);margin-bottom:4px;}
+  .logo-upload-box:hover{border-color:var(--magenta-dim);}
+  .logo-upload-icon{font-size:22px;line-height:1;color:var(--magenta-bright);margin-bottom:5px;}
+  .logo-upload-title{font-size:11px;font-weight:600;color:var(--ink);margin-bottom:3px;}
+  .logo-upload-sub{font-size:8.5px;color:var(--ink-dim);margin-bottom:9px;}
+  .logo-upload-btn{width:auto;display:inline-block;text-align:center;}
+  .logo-upload-box .btn-ghost{margin-top:7px;width:auto;padding:8px 12px;}
   .posgrid{ display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin-top:8px; }
   .posgrid button{
     aspect-ratio:1/1; background:var(--panel-2); border:1px solid var(--line);
@@ -1723,9 +1730,12 @@ main{grid-template-columns:214px minmax(0,1fr) 350px;background:#171719;}
 
     <div class="block watermark-compact">
       <h2 class="panel-title">Watermark Logo</h2>
-      <div class="upload-line">
-        <button class="file-btn" id="watermarkBtn">Upload logo…</button>
-        <button class="btn-ghost" id="removeWatermarkBtn" type="button" style="display:none;">Remove</button>
+      <div class="logo-upload-box" id="logoUploadBox">
+        <div class="logo-upload-icon">＋</div>
+        <div class="logo-upload-title">Upload your logo</div>
+        <div class="logo-upload-sub">PNG, JPG, WebP or SVG</div>
+        <button class="file-btn logo-upload-btn" id="watermarkBtn" type="button">Choose logo</button>
+        <button class="btn-ghost" id="removeWatermarkBtn" type="button" style="display:none;">Remove logo</button>
       </div>
       <input type="file" id="watermarkInput" accept="image/png,image/jpeg,image/webp,image/svg+xml">
       <div class="watermark-name" id="watermarkName" style="font-size:9px;color:var(--ink-dim);margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">No logo uploaded</div>
