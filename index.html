@@ -1922,7 +1922,7 @@ function snapshotState(){
     wmOpacity: state.wmOpacity,
     wmScale: state.wmScale,
     wmPos: state.wmPos,
-    photos: state.photos.map(p=>({ id:p.id, img:p.img, bgRemoved: !!p.bgRemoved, spots: cloneSpots(p.spots), crop:p.crop ? {...p.crop} : null, edit:p.edit ? {manual:{...p.edit.manual},effect:p.edit.effect,preset:p.edit.preset ? {...p.edit.preset}:null,presetFileName:p.edit.presetFileName || null} : DEFAULT_EDIT() }))
+    photos: state.photos.map(p=>({ id:p.id, img:p.img, beforeImg:p.beforeImg || p.img, bgRemoved: !!p.bgRemoved, spots: cloneSpots(p.spots), crop:p.crop ? {...p.crop} : null, edit:p.edit ? {manual:{...p.edit.manual},effect:p.edit.effect,preset:p.edit.preset ? {...p.edit.preset}:null,presetFileName:p.edit.presetFileName || null} : DEFAULT_EDIT() }))
   };
 }
 
@@ -1982,6 +1982,7 @@ function applySnapshot(snap){
     const photo = state.photos.find(p=>p.id===sp.id);
     if(photo){
       photo.img = sp.img;
+      photo.beforeImg = sp.beforeImg || photo.beforeImg || sp.img;
       photo.bgRemoved = sp.bgRemoved;
       photo.spots = cloneSpots(sp.spots);
       photo.crop = sp.crop ? {...sp.crop} : null;
@@ -2080,7 +2081,7 @@ function addPhotos(fileList){
     reader.onload = ev=>{
       const img = new Image();
       img.onload = ()=>{
-        state.photos.push({id: crypto.randomUUID(), name:file.name, img, spots:[], crop:null, edit:DEFAULT_EDIT()});
+        state.photos.push({id: crypto.randomUUID(), name:file.name, img, beforeImg:img, spots:[], crop:null, edit:DEFAULT_EDIT()});
         if(state.activeIndex===-1) state.activeIndex = 0;
         renderThumbs();
         renderStageVisibility();
@@ -2851,6 +2852,7 @@ function render(){
   if(!photo) return;
 
   const img = photo.img;
+  const beforeImg = photo.beforeImg || photo.img;
   const crop = photo.crop;
   const photoEdit = getPhotoEdit(photo);
   const sx = crop ? crop.x : 0;
@@ -2866,8 +2868,12 @@ function render(){
 
   // Lightroom-style Before view: original crop, no edit effects.
   beforeCtx.filter = 'none';
+  beforeCanvas.style.filter = 'none';
   beforeCtx.clearRect(0,0,beforeCanvas.width,beforeCanvas.height);
-  beforeCtx.drawImage(img,sx,sy,sw,sh,0,0,beforeCanvas.width,beforeCanvas.height);
+  const bsw = beforeImg.width, bsh = beforeImg.height;
+  beforeCanvas.width = Math.max(1, Math.round(bsw*scale));
+  beforeCanvas.height = Math.max(1, Math.round(bsh*scale));
+  beforeCtx.drawImage(beforeImg,0,0,bsw,bsh,0,0,beforeCanvas.width,beforeCanvas.height);
 
   ctx.filter = buildFilterString(photoEdit);
   ctx.drawImage(img,sx,sy,sw,sh,0,0,canvas.width,canvas.height);
@@ -3683,6 +3689,90 @@ document.querySelectorAll('.share-grid button').forEach(b=>{
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',restorePresets,{once:true}); else restorePresets();
   setTimeout(restorePresets,250); setTimeout(restorePresets,800); setTimeout(restorePresets,1800);
+})();
+</script>
+
+<style id="duskreel-mobile-before-after-v2">
+/* Duskreel mobile editor: compact, touch-friendly, no desktop panels fighting for space. */
+@media (max-width:760px){
+  html,body{width:100%;min-width:0;overflow-x:hidden;overflow-y:auto;}
+  #app{min-height:100dvh;height:auto;overflow:visible;}
+  header{height:50px;min-height:50px;padding:0 10px;position:sticky;top:0;z-index:50;}
+  .brand{min-width:0;gap:7px;}
+  .brand .mark-img{height:22px;}
+  .brand h1{font-size:14px;white-space:nowrap;}
+  .brand span{display:none;}
+  .header-right{gap:5px;min-width:0;}
+  .user-pill{font-size:10px;max-width:115px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .user-pill button{padding:6px 8px;min-height:34px;}
+  .mobile-menu-btn{display:block;width:34px;height:34px;min-height:34px;}
+  main{display:flex!important;flex-direction:column!important;width:100%;height:auto;min-height:0;overflow:visible;}
+  .rail{order:2;width:100%!important;border-right:0;border-top:1px solid var(--line);padding:8px 9px;overflow-x:auto;overflow-y:hidden;}
+  .rail h2{display:none;}
+  #thumbList{display:flex;gap:7px;min-width:max-content;}
+  .thumb{width:58px;flex:0 0 58px;}
+  .add-btn{display:none;}
+  .stage{order:1;width:100%!important;min-height:0!important;height:auto!important;padding:8px 8px 12px!important;display:block;overflow:visible!important;background:#111113;}
+  .stage:before{opacity:.045;}
+  .stage-label{top:7px;left:9px;}
+  .zoom-controls{top:7px;right:7px;transform:scale(.9);transform-origin:top right;}
+  .history-controls{top:7px;left:7px;right:auto;transform:scale(.9);transform-origin:top left;}
+  .before-after{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:start;gap:7px!important;width:100%;height:auto!important;min-height:0;transform:none!important;}
+  .compare-pane{width:100%!important;height:auto!important;min-width:0!important;min-height:0!important;display:block!important;}
+  .compare-pane canvas{display:block!important;width:100%!important;height:auto!important;max-width:100%!important;max-height:none!important;object-fit:contain;margin:0 auto;border-radius:5px;box-shadow:0 7px 18px rgba(0,0,0,.35);background:#0c0c0e;}
+  .compare-label{position:relative;display:inline-block;top:auto;left:auto;margin:0 0 5px 1px;padding:3px 6px;font-size:9px;border-radius:4px;background:#252529;color:#ddd;}
+  .compare-divider{display:none!important;}
+  .filename-tag{position:relative;left:auto;bottom:auto;display:block!important;margin:7px 2px 0;font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .filmstrip{position:relative!important;left:auto;right:auto;bottom:auto;width:100%;height:68px;margin-top:8px;padding:6px 7px;overflow:hidden;border-radius:7px;border:1px solid var(--line);}
+  .filmstrip-meta{height:15px;margin-bottom:3px;}
+  .panel{order:3;width:100%!important;height:auto!important;max-height:none!important;overflow:visible!important;border-left:0!important;border-top:1px solid var(--line);}
+  .lightroom-panel{width:100%!important;height:auto!important;max-height:none!important;overflow:visible!important;}
+  .block{padding:12px!important;}
+  .panel-title{font-size:12px!important;}
+  .preset-search-row{gap:6px!important;}
+  #presetSearch,#presetCategory{min-height:40px;font-size:12px!important;}
+  #fxGrid,.lightroom-panel #fxGrid{grid-template-columns:repeat(4,minmax(0,1fr))!important;max-height:230px!important;gap:6px!important;overflow-y:auto!important;}
+  .fx-swatch{min-width:0;min-height:74px;padding:5px 4px!important;}
+  .fx-swatch .fx-dot{min-height:42px;}
+  .fx-swatch span{font-size:9px;}
+  .ai-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important;}
+  .ai-tool{min-height:66px!important;padding:9px!important;}
+  .crop-tools{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:7px!important;}
+  .crop-tools button,.grade-btn,.bg-choice{min-height:44px!important;}
+  .crop-actions{display:grid!important;grid-template-columns:1fr 1fr!important;gap:7px!important;position:static!important;}
+  .export-bar{position:sticky!important;bottom:0;z-index:40;width:100%;height:auto!important;min-height:62px;padding:8px!important;display:flex!important;flex-direction:column;align-items:stretch!important;gap:7px!important;box-shadow:0 -8px 20px rgba(0,0,0,.25);}
+  .export-bar .count{font-size:10px;}
+  .export-bar .export-actions{display:grid!important;grid-template-columns:1fr 1fr;gap:7px!important;width:100%;}
+  .export-actions>*{width:100%!important;min-width:0!important;}
+  .format-select,.export-size-select,.export-quality-select{min-height:40px;width:100%;}
+  .btn-primary,.btn-ghost,.file-btn,.bg-remove-btn,.spot-btn{min-height:44px;touch-action:manipulation;}
+}
+@media (max-width:430px){
+  header{height:48px;min-height:48px;}
+  .stage{padding:7px 6px 10px!important;}
+  .before-after{gap:5px!important;}
+  .compare-label{font-size:8px;padding:3px 5px;}
+  .fx-swatch{min-height:68px;}
+  .fx-swatch .fx-dot{min-height:38px;}
+  .ai-grid{grid-template-columns:1fr 1fr!important;}
+  .crop-tools{grid-template-columns:1fr 1fr!important;}
+  .export-bar .export-actions{grid-template-columns:1fr!important;}
+}
+@media (max-width:360px){
+  .before-after{grid-template-columns:1fr!important;}
+  .compare-pane canvas{max-height:42vh!important;width:auto!important;max-width:100%!important;margin:0 auto;}
+}
+</style>
+<script>
+(function(){
+  // Keep the Before canvas visually unfiltered even if another style/plugin adds canvas filters.
+  function lockBeforeView(){
+    var c=document.getElementById('beforeWork');
+    if(c) c.style.setProperty('filter','none','important');
+  }
+  lockBeforeView();
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',lockBeforeView,{once:true});
+  window.addEventListener('resize',lockBeforeView,{passive:true});
 })();
 </script>
 </body>
