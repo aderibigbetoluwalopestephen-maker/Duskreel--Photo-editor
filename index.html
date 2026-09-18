@@ -3641,5 +3641,49 @@ document.querySelectorAll('.share-grid button').forEach(b=>{
 });
 
 </script>
+
+<!-- DUSKREEL PRESETS LAYOUT FIX: keep presets inside the editor panel, never floating over auth/editor -->
+<style id="duskreel-presets-layout-fix">
+  /* The old restore widget was a fixed overlay and caused the login/editor overlap. */
+  #duskRestoreTools{display:none!important;visibility:hidden!important;pointer-events:none!important;}
+  /* Use the real Presets section inside the right editing panel. */
+  .lightroom-panel #fxGrid{
+    display:grid!important;
+    visibility:visible!important;
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    gap:5px!important;
+    max-height:190px!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    padding:2px!important;
+  }
+  .lightroom-panel #fxGrid .fx-swatch{
+    display:block!important;
+    width:100%!important;
+    min-width:0!important;
+    height:auto!important;
+  }
+  .lightroom-panel #fxGrid .fx-dot{width:100%;aspect-ratio:1/1;}
+  @media(max-width:760px){
+    .lightroom-panel #fxGrid{grid-template-columns:repeat(4,minmax(0,1fr))!important;max-height:220px!important;}
+  }
+</style>
+<script>
+(function(){
+  function restorePresets(){
+    var floating=document.getElementById('duskRestoreTools');
+    if(floating) floating.remove();
+    var grid=document.getElementById('fxGrid');
+    if(grid){
+      grid.style.setProperty('display','grid','important');
+      grid.style.setProperty('visibility','visible','important');
+      grid.style.setProperty('max-height','190px','important');
+      grid.style.setProperty('overflow-y','auto','important');
+    }
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',restorePresets,{once:true}); else restorePresets();
+  setTimeout(restorePresets,250); setTimeout(restorePresets,800); setTimeout(restorePresets,1800);
+})();
+</script>
 </body>
 </html>
