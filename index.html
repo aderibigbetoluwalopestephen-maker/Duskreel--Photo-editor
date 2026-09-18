@@ -1188,23 +1188,25 @@ main{grid-template-columns:214px minmax(0,1fr) 350px;background:#171719;}
 })();
 </script>
 <style>
-/* DUSKREEL DESKTOP WATERMARK REMOVED V1 */
+/* Keep the actual logo upload control available in the editor. */
 @media (min-width:761px){
-  #watermarkControls,.watermark-controls,#watermarkPanel,.watermark-panel,#watermarkBtn{display:none !important;}
+  #watermarkControls,.watermark-controls,#watermarkPanel,.watermark-panel{display:none !important;}
 }
 </style>
 <script>
 (function(){
-  function removeWatermarkUI(){
-    document.querySelectorAll('#watermarkControls,.watermark-controls,#watermarkPanel,.watermark-panel,#watermarkBtn').forEach(function(el){el.remove();});
+  // The old cleanup also removed #watermarkBtn, which is the real Choose logo button.
+  // Keep it intact and only remove standalone top-level Watermark buttons.
+  function removeExtraWatermarkButtons(){
     document.querySelectorAll('button').forEach(function(b){
-      if ((b.textContent||'').trim().toLowerCase() === 'watermark') b.remove();
+      if(b.id === 'watermarkBtn') return;
+      if((b.textContent||'').trim().toLowerCase() === 'watermark') b.remove();
     });
   }
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',removeWatermarkUI,{once:true});
-  else removeWatermarkUI();
-  setTimeout(removeWatermarkUI,500);
-  setTimeout(removeWatermarkUI,1500);
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',removeExtraWatermarkButtons,{once:true});
+  else removeExtraWatermarkButtons();
+  setTimeout(removeExtraWatermarkButtons,500);
+  setTimeout(removeExtraWatermarkButtons,1500);
 })();
 </script>
 <style>
