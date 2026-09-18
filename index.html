@@ -411,6 +411,11 @@
   .logo-upload-sub{font-size:8.5px;color:var(--ink-dim);margin-bottom:9px;}
   .logo-upload-btn{width:auto;display:inline-block;text-align:center;}
   .logo-upload-box .btn-ghost{margin-top:7px;width:auto;padding:8px 12px;}
+  /* Compact watermark controls */
+  .watermark-compact .posgrid{grid-template-columns:repeat(3,28px);justify-content:start;gap:4px;margin-top:7px;}
+  .watermark-compact .posgrid button{width:28px;height:28px;min-height:28px;aspect-ratio:auto;border-radius:4px;}
+  .watermark-compact .posgrid button::after{width:4px;height:4px;}
+  .watermark-compact .row{margin:8px 0 3px;}
   .posgrid{ display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin-top:8px; }
   .posgrid button{
     aspect-ratio:1/1; background:var(--panel-2); border:1px solid var(--line);
