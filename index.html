@@ -1273,46 +1273,9 @@ main{grid-template-columns:214px minmax(0,1fr) 350px;background:#171719;}
   setTimeout(setup,700); setTimeout(setup,1800);
 })();
 </script>
-<style>
-/* DUSKREEL DESKTOP PRESETS COMPACT V1 */
-@media (min-width:761px){
-  /* Match preset controls to the compact Crop tool footprint. */
-  #duskEffectsV2{display:grid!important;grid-template-columns:repeat(6,minmax(54px,1fr))!important;gap:5px!important;max-height:none!important;overflow:visible!important;padding:4px!important;}
-  #duskEffectsV2 button{min-width:0!important;width:100%!important;height:30px!important;padding:4px 5px!important;margin:0!important;border-radius:5px!important;font-size:10px!important;line-height:1.05!important;}
-  /* Remove the old tiny/empty effect boxes completely. */
-  #fxGrid,.fxGrid,#fxGrid>*{display:none!important;width:0!important;height:0!important;min-width:0!important;min-height:0!important;padding:0!important;margin:0!important;border:0!important;box-shadow:none!important;}
-  #fxGrid:empty,.fxGrid:empty{display:none!important;}
-}
-</style>
-<script>
-(function(){
-  function clean(){
-    document.querySelectorAll('#fxGrid,.fxGrid').forEach(function(el){el.style.setProperty('display','none','important');el.setAttribute('aria-hidden','true');});
-  }
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',clean,{once:true}); else clean();
-  setTimeout(clean,300); setTimeout(clean,1000);
-})();
-</script>
-<style>
-/* DUSKREEL DESKTOP PRESETS + WATERMARK RESTORE V2 */
-@media (min-width:761px){
-  #duskRestoreTools{display:block!important;position:fixed;right:18px;top:68px;width:250px;max-height:calc(100vh - 88px);overflow:auto;z-index:90;background:var(--panel,#1E1220);border:1px solid var(--line,#4A2A52);border-radius:10px;padding:10px;box-shadow:0 18px 45px rgba(0,0,0,.45)}
-  #duskRestoreTools .dr-head{font-size:12px;font-weight:700;margin:0 0 7px;color:#fff}
-  #duskRestoreTools .dr-sub{font-size:10px;color:var(--ink-dim,#CBA6D1);margin:0 0 7px}
-  #duskRestorePresets{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
-  #duskRestorePresets button{height:30px;min-width:0;padding:3px 4px;border:1px solid var(--line,#4A2A52);border-radius:5px;background:var(--panel-2,#2A1830);color:#fff;font-size:10px;font-weight:600;cursor:pointer}
-  #duskRestorePresets button:hover,#duskRestorePresets button.active{background:var(--magenta,#E619A6);border-color:var(--magenta-bright,#FF4FC3)}
-  #duskRestoreWatermark{margin-top:10px;padding-top:9px;border-top:1px solid var(--line,#4A2A52)}
-  #duskRestoreWatermark input[type=text]{width:100%;height:30px;padding:5px 7px;background:var(--panel-2,#2A1830);border:1px solid var(--line,#4A2A52);border-radius:5px;color:#fff;font-size:11px}
-  #duskRestoreWatermark label{display:block;margin:6px 0 3px;color:var(--ink-dim,#CBA6D1);font-size:9px}
-  #duskRestoreWatermark input[type=range]{width:100%;height:18px}
-  #duskRestoreWatermark .dr-row{display:flex;gap:5px;margin-top:6px}
-  #duskRestoreWatermark button{flex:1;height:28px;border:1px solid var(--line,#4A2A52);border-radius:5px;background:var(--panel-2,#2A1830);color:#fff;font-size:10px;cursor:pointer}
-  #duskRestoreWatermark .dr-primary{background:var(--magenta,#E619A6);border-color:var(--magenta,#E619A6)}
-  #duskRestoreBadge{position:absolute;left:50%;top:50%;z-index:26;transform:translate(-50%,-50%);display:none;color:#fff;font-weight:700;text-shadow:0 2px 8px #000;white-space:nowrap;cursor:move;user-select:none;pointer-events:auto}
-}
-@media (max-width:760px){#duskRestoreTools{display:none!important}}
-</style>
+
+
+
 <script>
 (function(){
   function findImageNodes(){
@@ -1681,26 +1644,22 @@ main{grid-template-columns:214px minmax(0,1fr) 350px;background:#171719;}
       <div class="spot-hint">Turn this on, then click any dark spot, blemish, or dust speck on the photo — Duskreel samples the surrounding tone and heals it away.</div>
     </div>
 
+
+
     <div class="block watermark-compact">
-      <h2 class="panel-title">Watermark</h2>
+      <h2 class="panel-title">Watermark Logo</h2>
       <div class="upload-line">
-        <button class="file-btn" id="watermarkBtn">Upload watermark…</button>
+        <button class="file-btn" id="watermarkBtn">Upload logo…</button>
+        <button class="btn-ghost" id="removeWatermarkBtn" type="button" style="display:none;">Remove</button>
       </div>
-      <input type="file" id="watermarkInput" accept="image/*">
+      <input type="file" id="watermarkInput" accept="image/png,image/jpeg,image/webp,image/svg+xml">
+      <div class="watermark-name" id="watermarkName" style="font-size:9px;color:var(--ink-dim);margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">No logo uploaded</div>
       <div class="row"><label>Opacity</label><span class="val" id="wmOpacityVal">70%</span></div>
       <input type="range" id="wmOpacity" min="0" max="100" value="70">
       <div class="row"><label>Size</label><span class="val" id="wmScaleVal">18%</span></div>
       <input type="range" id="wmScale" min="5" max="50" value="18">
       <div class="posgrid" id="posGrid"></div>
-    </div>
-
-    <div class="block">
-      <h2 class="panel-title">Preset File</h2>
-      <div class="upload-line">
-        <button class="file-btn" id="presetBtn">Upload .xmp preset…</button>
-      </div>
-      <input type="file" id="presetInput" accept=".xmp,text/xml">
-      <div class="preset-readout" id="presetReadout"></div>
+      <div class="watermark-hint" style="font-size:9px;color:var(--ink-dim);margin-top:7px;line-height:1.4;">Upload your own logo. It appears on the After image and is included when the edited photo is exported.</div>
     </div>
 
     <div class="block">
@@ -1958,12 +1917,14 @@ function syncControlsFromState(){
   });
   if(state.watermarkFileName) el('watermarkBtn').textContent = state.watermarkFileName;
 
-  if(state.preset){
-    showPresetReadout(state.preset, state.presetFileName || 'preset');
+  if(state.watermarkFileName){
+    el('watermarkName').textContent = state.watermarkFileName;
+    el('watermarkBtn').textContent = 'Change logo…';
+    el('removeWatermarkBtn').style.display = 'inline-flex';
   } else {
-    el('presetReadout').classList.remove('show');
-    el('presetReadout').innerHTML = '';
-    el('presetBtn').textContent = 'Upload .xmp preset…';
+    el('watermarkName').textContent = 'No logo uploaded';
+    el('watermarkBtn').textContent = 'Upload logo…';
+    el('removeWatermarkBtn').style.display = 'none';
   }
 }
 
@@ -2127,15 +2088,22 @@ el('watermarkBtn').addEventListener('click', ()=> el('watermarkInput').click());
 el('watermarkInput').addEventListener('change', e=>{
   const file = e.target.files[0];
   if(!file) return;
-  el('watermarkBtn').textContent = file.name;
   state.watermarkFileName = file.name;
   const reader = new FileReader();
   reader.onload = ev=>{
     const img = new Image();
-    img.onload = ()=>{ state.watermarkImg = img; render(); pushHistory(); };
+    img.onload = ()=>{ state.watermarkImg = img; syncControlsFromState(); render(); pushHistory(); };
     img.src = ev.target.result;
   };
   reader.readAsDataURL(file);
+});
+el('removeWatermarkBtn').addEventListener('click', ()=>{
+  state.watermarkImg = null;
+  state.watermarkFileName = null;
+  el('watermarkInput').value = '';
+  syncControlsFromState();
+  render();
+  pushHistory();
 });
 
 el('wmOpacity').addEventListener('input', e=>{
@@ -2763,60 +2731,6 @@ function savedPresetMatchesSearch(p, q){
     p.presetFileName || ''
   ].join(' ').toLowerCase();
   return !q || hay.includes(q);
-}
-
-// ---------- XMP preset parsing ----------
-el('presetBtn').addEventListener('click', ()=> el('presetInput').click());
-el('presetInput').addEventListener('change', e=>{
-  const file = e.target.files[0];
-  if(!file) return;
-  el('presetBtn').textContent = file.name;
-  state.presetFileName = file.name;
-  const reader = new FileReader();
-  reader.onload = ev=>{
-    const parsed = parseXMP(ev.target.result);
-    state.preset = parsed;
-    saveCurrentEditToPhoto();
-    showPresetReadout(parsed, file.name);
-    render();
-    pushHistory();
-  };
-  reader.readAsText(file);
-});
-
-function parseXMP(text){
-  const doc = new DOMParser().parseFromString(text, 'text/xml');
-  const desc = doc.getElementsByTagName('rdf:Description')[0] || doc.querySelector('Description');
-  const out = {};
-  if(desc){
-    for(const attr of desc.attributes){
-      out[attr.name.replace('crs:','')] = attr.value;
-    }
-  }
-  const num = k => out[k]!==undefined ? parseFloat(out[k]) : 0;
-  return {
-    exposure: num('Exposure2012'),
-    contrast: num('Contrast2012'),
-    highlights: num('Highlights2012'),
-    shadows: num('Shadows2012'),
-    saturation: num('Saturation'),
-    vibrance: num('Vibrance'),
-    temperature: num('Temperature'),
-    tint: num('Tint'),
-    presetName: out['Name'] || null
-  };
-}
-
-function showPresetReadout(p, filename){
-  const box = el('presetReadout');
-  box.classList.add('show');
-  box.innerHTML = `
-    <div><b>${p.presetName || filename}</b></div>
-    Exposure <b>${p.exposure||0}</b> · Contrast <b>${p.contrast||0}</b><br>
-    Highlights <b>${p.highlights||0}</b> · Shadows <b>${p.shadows||0}</b><br>
-    Saturation <b>${p.saturation||0}</b> · Vibrance <b>${p.vibrance||0}</b><br>
-    <span style="opacity:0.7">Applied as an approximation — Lightroom's own render engine can't be reproduced exactly in-browser.</span>
-  `;
 }
 
 // ---------- render pipeline ----------
